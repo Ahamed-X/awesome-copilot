@@ -33,6 +33,7 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md#adding-agentic-workflows) for guideline
 
 | Name | Description | Triggers |
 | ---- | ----------- | -------- |
+| [Agents Maintenance](../workflows/agents-maintenance.md) | Review merged pull requests and updated source files since the last run, then open a pull request that keeps AGENTS.md accurate and current. | schedule |
 | [Daily Issues Report](../workflows/daily-issues-report.md) | Generates a daily summary of open issues and recent activity as a GitHub issue | schedule |
 | [OSPO Contributors Report](../workflows/ospo-contributors-report.md) | Monthly contributor activity metrics across an organization's repositories. | schedule, workflow_dispatch |
 | [OSPO Organization Health Report](../workflows/ospo-org-health.md) | Comprehensive weekly health report for a GitHub organization. Surfaces stale issues/PRs, merge time analysis, contributor leaderboards, and actionable items needing human attention. | schedule, workflow_dispatch |
