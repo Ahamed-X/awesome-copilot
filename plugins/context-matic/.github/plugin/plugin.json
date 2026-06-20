@@ -1,6 +1,6 @@
 {
   "name": "context-matic",
-  "description": "Coding agents hallucinate APIs. ContextMatic gives them curated, versioned API and SDK docs. Ask your agent to \"integrate the payments API\" and it guesses — falling back on outdated training data and generic patterns that don't match your actual SDK. ContextMatic solves this by giving the agent deterministic, version-aware, SDK-native context at the exact moment it's needed.",
+  "description": "Coding agents hallucinate APIs. ContextMatic gives them curated, versioned API and SDK docs. Ask your agent to \"integrate the payments API\" and it guesses \u2014 falling back on outdated training data and generic patterns that don't match your actual SDK. ContextMatic solves this by giving the agent deterministic, version-aware, SDK-native context at the exact moment it's needed.",
   "version": "0.1.0",
   "keywords": [
     "api-context",
@@ -19,7 +19,7 @@
   "repository": "https://github.com/github/awesome-copilot",
   "license": "MIT",
   "skills": [
-    "./skills/integrate-context-matic",
-    "./skills/onboard-context-matic"
+    "./skills/integrate-context-matic/",
+    "./skills/onboard-context-matic/"
   ]
 }

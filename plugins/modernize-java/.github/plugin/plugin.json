@@ -14,7 +14,9 @@
   ],
   "license": "MIT",
   "agents": [
-    "./agents"
+    "./agents/modernization.md",
+    "./agents/modernize-java.md",
+    "./agents/plan.md"
   ],
   "mcpServers": {
     "appmod-mcp-server": {
