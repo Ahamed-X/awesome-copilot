@@ -2,6 +2,7 @@
 description: Weekly scan of agents, instructions, and skills to identify potential duplicate resources and report them for review
 on:
   schedule: weekly
+if: ${{ secrets.COPILOT_GITHUB_TOKEN != '' }}
 permissions:
   contents: read
   issues: read

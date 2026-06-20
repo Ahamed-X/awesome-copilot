@@ -4,6 +4,7 @@ description: "Daily check for new GitHub Copilot features and updates. Opens a P
 on:
   schedule: daily
   workflow_dispatch:
+if: ${{ secrets.COPILOT_GITHUB_TOKEN != '' }}
 tools:
   bash: ["curl", "gh"]
   edit:

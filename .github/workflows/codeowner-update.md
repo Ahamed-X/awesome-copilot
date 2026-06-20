@@ -3,7 +3,7 @@ description: "Updates the CODEOWNERS file when a maintainer comments #codeowner 
 on:
   issue_comment:
     types: [created]
-if: ${{ contains(github.event.comment.body, '#codeowner') && github.event.issue.pull_request }}
+if: ${{ contains(github.event.comment.body, '#codeowner') && github.event.issue.pull_request && secrets.COPILOT_GITHUB_TOKEN != '' }}
 permissions:
   contents: read
   pull-requests: read
