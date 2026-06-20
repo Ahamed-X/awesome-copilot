@@ -5,6 +5,9 @@ import path from "path";
 import { VFile } from "vfile";
 import { matter } from "vfile-matter";
 
+const FRONTMATTER_CACHE = new Map();
+const FILE_CONTENT_CACHE = new Map();
+
 function safeFileOperation(operation, filePath, defaultValue = null) {
   try {
     return operation();
@@ -15,45 +18,77 @@ function safeFileOperation(operation, filePath, defaultValue = null) {
 }
 
 /**
+ * Reads a file and caches its content.
+ * @param {string} filePath - Path to the file
+ * @returns {string|null} File content or null on error
+ */
+function readFileCached(filePath) {
+  if (FILE_CONTENT_CACHE.has(filePath)) {
+    return FILE_CONTENT_CACHE.get(filePath);
+  }
+
+  return safeFileOperation(
+    () => {
+      const content = fs.readFileSync(filePath, "utf8");
+      FILE_CONTENT_CACHE.set(filePath, content);
+      return content;
+    },
+    filePath,
+    null
+  );
+}
+
+/**
  * Parse frontmatter from a markdown file using vfile-matter
  * Works with any markdown file that has YAML frontmatter (agents, prompts, instructions)
  * @param {string} filePath - Path to the markdown file
  * @returns {object|null} Parsed frontmatter object or null on error
  */
 function parseFrontmatter(filePath) {
-  return safeFileOperation(
+  if (FRONTMATTER_CACHE.has(filePath)) {
+    return FRONTMATTER_CACHE.get(filePath);
+  }
+
+  const frontmatter = safeFileOperation(
     () => {
-      const content = fs.readFileSync(filePath, "utf8");
+      const content = readFileCached(filePath);
+      if (content === null) return null;
+
       const file = new VFile({ path: filePath, value: content });
 
       // Parse the frontmatter using vfile-matter
       matter(file);
 
       // The frontmatter is now available in file.data.matter
-      const frontmatter = file.data.matter;
+      const matterResult = file.data.matter;
 
       // Normalize string fields that can accumulate trailing newlines/spaces
-      if (frontmatter) {
-        if (typeof frontmatter.name === "string") {
-          frontmatter.name = frontmatter.name.replace(/[\r\n]+$/g, "").trim();
+      if (matterResult) {
+        if (typeof matterResult.name === "string") {
+          matterResult.name = matterResult.name.replace(/[\r\n]+$/g, "").trim();
         }
-        if (typeof frontmatter.title === "string") {
-          frontmatter.title = frontmatter.title.replace(/[\r\n]+$/g, "").trim();
+        if (typeof matterResult.title === "string") {
+          matterResult.title = matterResult.title
+            .replace(/[\r\n]+$/g, "")
+            .trim();
         }
-        if (typeof frontmatter.description === "string") {
+        if (typeof matterResult.description === "string") {
           // Remove only trailing whitespace/newlines; preserve internal formatting
-          frontmatter.description = frontmatter.description.replace(
+          matterResult.description = matterResult.description.replace(
             /[\s\r\n]+$/g,
             ""
           );
         }
       }
 
-      return frontmatter;
+      return matterResult;
     },
     filePath,
     null
   );
+
+  FRONTMATTER_CACHE.set(filePath, frontmatter);
+  return frontmatter;
 }
 
 /**
@@ -315,6 +350,7 @@ function parseYamlFile(filePath) {
 
 export {
   extractAgentMetadata,
+  readFileCached,
   extractMcpServerConfigs,
   extractMcpServers,
   parseFrontmatter,

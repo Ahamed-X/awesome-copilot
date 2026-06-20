@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { ROOT_FOLDER } from "./constants.mjs";
 import { readExternalPlugins } from "./external-plugin-validation.mjs";
+import { readFileCached } from "./yaml-parser.mjs";
 
 const PLUGINS_DIR = path.join(ROOT_FOLDER, "plugins");
 const MARKETPLACE_FILE = path.join(ROOT_FOLDER, ".github/plugin", "marketplace.json");
@@ -22,7 +23,8 @@ function readPluginMetadata(pluginDir) {
   }
 
   try {
-    const content = fs.readFileSync(pluginJsonPath, "utf8");
+    const content = readFileCached(pluginJsonPath);
+    if (!content) return null;
     return JSON.parse(content);
   } catch (error) {
     console.error(`Error reading plugin.json for ${path.basename(pluginDir)}:`, error.message);

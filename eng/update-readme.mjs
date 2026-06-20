@@ -24,6 +24,7 @@ import {
   parseHookMetadata,
   parseSkillMetadata,
   parseWorkflowMetadata,
+  readFileCached,
 } from "./yaml-parser.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -123,7 +124,8 @@ function safeFileOperation(operation, filePath, defaultValue = null) {
 function extractTitle(filePath) {
   return safeFileOperation(
     () => {
-      const content = fs.readFileSync(filePath, "utf8");
+      const content = readFileCached(filePath);
+      if (content === null) return "";
       const lines = content.split("\n");
 
       // Step 1: Try to get title from frontmatter using vfile-matter

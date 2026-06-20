@@ -1,0 +1,3 @@
+## 2025-05-15 - Caching redundant file reads in build scripts
+**Learning:** The build process for `awesome-copilot` involves processing over 1,500 markdown files, often reading and parsing the same file multiple times (e.g., for title extraction and then for frontmatter/description extraction). Adding a simple process-level in-memory cache for file contents and parsed frontmatter significantly reduces I/O and CPU overhead.
+**Action:** Use `readFileCached` and the cached `parseFrontmatter` in `eng/yaml-parser.mjs` for any scripts that process the same files repeatedly during a single execution.
