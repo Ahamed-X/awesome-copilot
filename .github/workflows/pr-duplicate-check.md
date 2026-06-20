@@ -3,7 +3,6 @@ description: 'Checks PRs for potential duplicate agents, instructions, skills, a
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-if: ${{ secrets.COPILOT_GITHUB_TOKEN != '' }}
 permissions:
   contents: read
   pull-requests: read

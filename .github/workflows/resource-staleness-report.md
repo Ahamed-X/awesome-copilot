@@ -2,7 +2,6 @@
 description: Weekly report identifying stale and aging resources across agents, prompts, instructions, hooks, and skills folders
 on:
   schedule: weekly
-if: ${{ secrets.COPILOT_GITHUB_TOKEN != '' }}
 permissions:
   contents: read
 tools:
