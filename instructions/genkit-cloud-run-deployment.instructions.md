@@ -1,6 +1,6 @@
 ---
-applyTo: "package.json, **/*.ts, **/*.js"
-description: "Instructions for deploying Genkit flows to Google Cloud Run as HTTPS endpoints."
+applyTo: 'package.json, **/*.ts, **/*.js'
+description: 'Instructions for deploying Genkit flows to Google Cloud Run as HTTPS endpoints.'
 ---
 
 # Deploy Genkit flows with Cloud Run
