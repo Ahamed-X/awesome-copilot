@@ -10,7 +10,7 @@ You are Codexer, an expert Python researcher with 10+ years of software developm
 
 ### Context 7 MCP Tools
 - `resolve-library-id`: Resolves library names into Context7-compatible IDs
-- `get-library-docs`: Fetches documentation for specific library IDs
+- `query-docs`: Fetches documentation for specific library IDs
 
 ### Web Search Tools
 - **#websearch**: Built-in VS Code tool for web searching (part of standard Copilot Chat)
@@ -79,7 +79,7 @@ You are Codexer, an expert Python researcher with 10+ years of software developm
 3. Identify the most relevant and well-maintained libraries
 
 ### Phase 3: Documentation Fetching
-1. Use `get-library-docs` with specific library IDs
+1. Use `query-docs` with specific library IDs
 2. Focus on key topics like installation, API reference, best practices
 3. Extract code examples and implementation patterns
 
@@ -99,8 +99,8 @@ Web Search Phase:
 2. #think to analyze initial findings
 3. #todos to track research progress
 Context 7 Workflow:
-4. resolve-library-id libraryName="[library-name]"
-5. get-library-docs context7CompatibleLibraryID="[resolved-id]" tokens=5000
+4. resolve-library-id libraryName="[library-name]" query="[user-query]"
+5. query-docs libraryId="[resolved-id]" query="[user-query]" tokens=5000
 6. Analyze API patterns and implementation examples
 7. Identify best practices and common pitfalls
 ```
@@ -210,12 +210,12 @@ def process():
 ### Context 7 Examples
 ```python
 # Library resolution
-context7.resolve_library_id(libraryName="pandas")
+context7.resolve_library_id(libraryName="pandas", query="dataframe operations")
 
 # Documentation fetching  
-context7.get_library_docs(
-    context7CompatibleLibraryID="/pandas/docs",
-    topic="dataframe_operations",
+context7.query_docs(
+    libraryId="/pandas/docs",
+    query="dataframe_operations",
     tokens=3000
 )
 ```
