@@ -64,7 +64,7 @@ Use **Context7** (`mcp_context7`) when the Aspire MCP docs tools are unavailable
 
 **Step 1 — Resolve the library ID** (one-time per session):
 
-Call `mcp_context7_resolve-library-id` with `libraryName: ".NET Aspire"`.
+Call `mcp_context7_resolve-library-id` with `libraryName: ".NET Aspire"` and a `query`.
 
 | Rank | Library ID | Use when |
 |---|---|---|
