@@ -228,7 +228,7 @@ function parseHookMetadata(hookPath) {
       const hooksJsonPath = path.join(hookPath, "hooks.json");
       if (fs.existsSync(hooksJsonPath)) {
         try {
-          const hooksJsonContent = fs.readFileSync(hooksJsonPath, "utf8");
+          const hooksJsonContent = readFileCached(hooksJsonPath);
           const hooksConfig = JSON.parse(hooksJsonContent);
           // Extract all hook event names from the hooks object
           if (hooksConfig.hooks && typeof hooksConfig.hooks === "object") {
