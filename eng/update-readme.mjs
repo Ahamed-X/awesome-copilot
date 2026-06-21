@@ -24,6 +24,7 @@ import {
   parseHookMetadata,
   parseSkillMetadata,
   parseWorkflowMetadata,
+  readFileCached,
 } from "./yaml-parser.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -123,7 +124,7 @@ function safeFileOperation(operation, filePath, defaultValue = null) {
 function extractTitle(filePath) {
   return safeFileOperation(
     () => {
-      const content = fs.readFileSync(filePath, "utf8");
+      const content = readFileCached(filePath);
       const lines = content.split("\n");
 
       // Step 1: Try to get title from frontmatter using vfile-matter
@@ -715,7 +716,7 @@ function readPluginJson(pluginDir) {
   const jsonPath = path.join(pluginDir, ".github/plugin", "plugin.json");
   if (!fs.existsSync(jsonPath)) return null;
   try {
-    return JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+    return JSON.parse(readFileCached(jsonPath));
   } catch {
     return null;
   }
@@ -880,7 +881,7 @@ function generateFeaturedPluginsSection(pluginsDir) {
 function writeFileIfChanged(filePath, content) {
   const exists = fs.existsSync(filePath);
   if (exists) {
-    const original = fs.readFileSync(filePath, "utf8");
+    const original = readFileCached(filePath);
     if (original === content) {
       console.log(
         `${path.basename(filePath)} is already up to date. No changes needed.`
@@ -1011,7 +1012,7 @@ async function main() {
       const mainReadmePath = path.join(ROOT_FOLDER, "README.md");
 
       if (fs.existsSync(mainReadmePath)) {
-        let readmeContent = fs.readFileSync(mainReadmePath, "utf8");
+        let readmeContent = readFileCached(mainReadmePath);
 
         // Define markers to identify where to insert the featured plugins
         const startMarker = "## 🌟 Featured Plugins";
