@@ -28,6 +28,7 @@ import {
   parseSkillMetadata,
   parseWorkflowMetadata,
   parseYamlFile,
+  readFileCached,
 } from "./yaml-parser.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -553,7 +554,7 @@ function generatePluginsData(gitDates) {
     if (!fs.existsSync(jsonPath)) continue;
 
     try {
-      const data = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+      const data = JSON.parse(readFileCached(jsonPath));
       const relPath = `plugins/${dir.name}`;
       const dates = gitDates[relPath] || gitDates[`${relPath}/`] || {};
 
@@ -604,7 +605,7 @@ function generatePluginsData(gitDates) {
   if (fs.existsSync(externalJsonPath)) {
     try {
       const externalPlugins = JSON.parse(
-        fs.readFileSync(externalJsonPath, "utf-8")
+        readFileCached(externalJsonPath)
       );
       if (Array.isArray(externalPlugins)) {
         let addedCount = 0;
@@ -1057,7 +1058,7 @@ async function main() {
   // Count contributors from .all-contributorsrc for manifest stats
   const contributorsRcPath = path.join(ROOT_FOLDER, ".all-contributorsrc");
   const contributorCount = fs.existsSync(contributorsRcPath)
-    ? (JSON.parse(fs.readFileSync(contributorsRcPath, "utf-8")).contributors || []).length
+    ? (JSON.parse(readFileCached(contributorsRcPath)).contributors || []).length
     : 0;
 
   const searchIndex = generateSearchIndex(
