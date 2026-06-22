@@ -1,0 +1,3 @@
+## 2025-05-14 - [In-memory Caching for Build Scripts]
+**Learning:** The build process for this repository involves multiple scripts (`update-readme.mjs`, `generate-marketplace.mjs`) that iterate over hundreds of metadata-rich markdown files. Many files are read multiple times across different scripts or even within the same script to extract different fields (title, description, frontmatter). Implementing a process-level in-memory cache for `fs.readFileSync` and `parseFrontmatter` significantly reduces redundant disk I/O and CPU-intensive YAML parsing.
+**Action:** Use `readFileCached(filePath)` and `parseFrontmatter(filePath)` from `eng/yaml-parser.mjs` in all engineering scripts that need to access file content or metadata multiple times.
