@@ -58,17 +58,14 @@ function parseFrontmatter(filePath) {
       // Normalize string fields that can accumulate trailing newlines/spaces
       if (frontmatter) {
         if (typeof frontmatter.name === "string") {
-          frontmatter.name = frontmatter.name.replace(/[\r\n]+$/g, "").trim();
+          frontmatter.name = frontmatter.name.trim();
         }
         if (typeof frontmatter.title === "string") {
-          frontmatter.title = frontmatter.title.replace(/[\r\n]+$/g, "").trim();
+          frontmatter.title = frontmatter.title.trim();
         }
         if (typeof frontmatter.description === "string") {
           // Remove only trailing whitespace/newlines; preserve internal formatting
-          frontmatter.description = frontmatter.description.replace(
-            /[\s\r\n]+$/g,
-            ""
-          );
+          frontmatter.description = frontmatter.description.trimEnd();
         }
       }
 
