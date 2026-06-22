@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { ROOT_FOLDER } from "./constants.mjs";
 import { readExternalPlugins } from "./external-plugin-validation.mjs";
+import { readFileCached } from "./yaml-parser.mjs";
 
 const PLUGINS_DIR = path.join(ROOT_FOLDER, "plugins");
 
@@ -151,7 +152,7 @@ function validatePlugin(folderName) {
   // Parse plugin.json
   let plugin;
   try {
-    const raw = fs.readFileSync(pluginJsonPath, "utf-8");
+    const raw = readFileCached(pluginJsonPath);
     plugin = JSON.parse(raw);
   } catch (err) {
     errors.push(`failed to parse plugin.json: ${err.message}`);
