@@ -5,6 +5,24 @@ import path from "path";
 import { VFile } from "vfile";
 import { matter } from "vfile-matter";
 
+// In-memory caches for file reads and parsed frontmatter
+const fileReadCache = new Map();
+const frontmatterCache = new Map();
+
+/**
+ * Read file content with in-memory caching
+ * @param {string} filePath - Path to the file
+ * @returns {string} File content
+ */
+function readFileCached(filePath) {
+  if (fileReadCache.has(filePath)) {
+    return fileReadCache.get(filePath);
+  }
+  const content = fs.readFileSync(filePath, "utf8");
+  fileReadCache.set(filePath, content);
+  return content;
+}
+
 function safeFileOperation(operation, filePath, defaultValue = null) {
   try {
     return operation();
@@ -21,34 +39,37 @@ function safeFileOperation(operation, filePath, defaultValue = null) {
  * @returns {object|null} Parsed frontmatter object or null on error
  */
 function parseFrontmatter(filePath) {
+  if (frontmatterCache.has(filePath)) {
+    return frontmatterCache.get(filePath);
+  }
+
   return safeFileOperation(
     () => {
-      const content = fs.readFileSync(filePath, "utf8");
+      const content = readFileCached(filePath);
       const file = new VFile({ path: filePath, value: content });
 
       // Parse the frontmatter using vfile-matter
       matter(file);
 
       // The frontmatter is now available in file.data.matter
-      const frontmatter = file.data.matter;
+      // Use default empty object if no frontmatter found (per repository memory)
+      const frontmatter = file.data.matter || {};
 
       // Normalize string fields that can accumulate trailing newlines/spaces
       if (frontmatter) {
         if (typeof frontmatter.name === "string") {
-          frontmatter.name = frontmatter.name.replace(/[\r\n]+$/g, "").trim();
+          frontmatter.name = frontmatter.name.trim();
         }
         if (typeof frontmatter.title === "string") {
-          frontmatter.title = frontmatter.title.replace(/[\r\n]+$/g, "").trim();
+          frontmatter.title = frontmatter.title.trim();
         }
         if (typeof frontmatter.description === "string") {
           // Remove only trailing whitespace/newlines; preserve internal formatting
-          frontmatter.description = frontmatter.description.replace(
-            /[\s\r\n]+$/g,
-            ""
-          );
+          frontmatter.description = frontmatter.description.trimEnd();
         }
       }
 
+      frontmatterCache.set(filePath, frontmatter);
       return frontmatter;
     },
     filePath,
@@ -205,7 +226,7 @@ function parseHookMetadata(hookPath) {
       const hooksJsonPath = path.join(hookPath, "hooks.json");
       if (fs.existsSync(hooksJsonPath)) {
         try {
-          const hooksJsonContent = fs.readFileSync(hooksJsonPath, "utf8");
+          const hooksJsonContent = readFileCached(hooksJsonPath);
           const hooksConfig = JSON.parse(hooksJsonContent);
           // Extract all hook event names from the hooks object
           if (hooksConfig.hooks && typeof hooksConfig.hooks === "object") {
@@ -305,7 +326,7 @@ function parseWorkflowMetadata(filePath) {
 function parseYamlFile(filePath) {
   return safeFileOperation(
     () => {
-      const content = fs.readFileSync(filePath, "utf8");
+      const content = readFileCached(filePath);
       return yaml.load(content, { schema: yaml.JSON_SCHEMA });
     },
     filePath,
@@ -322,5 +343,6 @@ export {
   parseHookMetadata,
   parseWorkflowMetadata,
   parseYamlFile,
+  readFileCached,
   safeFileOperation,
 };
